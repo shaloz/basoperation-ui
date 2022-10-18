@@ -19,6 +19,10 @@ interface ICoordinates {
   lng: number;
 }
 
+export const hasNumber = (myString: string) => {
+  return /\d/.test(myString);
+};
+
 const AddLocations: React.FunctionComponent = () => {
   const [name, setName] = useState("");
   const [lat, setLat] = useState("");
@@ -26,6 +30,13 @@ const AddLocations: React.FunctionComponent = () => {
   const [corrdinatesArray, setCorrdinatesArray] = useState<ICoordinates[]>([]);
 
   const handleSave = () => {
+    if (!lng.includes("-")) {
+      return alert("Error, please add - to your longitude");
+    }
+
+    if (!hasNumber(lng) || !hasNumber(lat)) {
+      return alert("Only numbers allowed");
+    }
     const copy = [
       ...corrdinatesArray,
       { lat: parseFloat(lat), lng: parseFloat(lng) },

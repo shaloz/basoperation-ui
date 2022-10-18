@@ -14,6 +14,7 @@ import {
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { handleLookUpApi } from "../api/api";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { hasNumber } from "./AddLocations";
 
 interface IData {
   id: number;
@@ -30,6 +31,13 @@ const FindUsers: React.FunctionComponent = () => {
 
   const handleLookUp = async () => {
     try {
+      if (!lng.includes("-")) {
+        return alert("Error, please add - to your longitude");
+      }
+      if (!hasNumber(radius) || !hasNumber(lng) || !hasNumber(lat)) {
+        return alert("Only numbers allowed");
+      }
+
       setIsLoading(true);
       const result = await handleLookUpApi(
         parseFloat(lat),
@@ -39,6 +47,7 @@ const FindUsers: React.FunctionComponent = () => {
       setData(result.data);
       setIsLoading(false);
     } catch (err) {
+      setIsLoading(false);
       alert("error");
     }
   };
@@ -112,18 +121,19 @@ const FindUsers: React.FunctionComponent = () => {
             loading={isLoading}
             loadingIndicator="Loading…"
             variant="outlined"
+            disabled={lat == "" || lng == "" || radius == "" ? true : false}
             sx={{ width: 100, marginLeft: 1 }}
           >
             Find
           </LoadingButton>
-          <Button
+          {/* <Button
             variant="contained"
             sx={{ marginLeft: 1 }}
             onClick={handleLookUp}
             disabled={lat == "" || lng == "" ? true : false}
           >
             use my location
-          </Button>
+          </Button> */}
         </Box>
       </Box>
       {renderData()}
